@@ -1,0 +1,44 @@
+body {
+    background-image: url("img/foodbg.jpg")
+}
+
+#home-container {
+    height: 800px;
+    width: 600px;
+    border: 1px solid gray;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3%;
+    background-color: white;
+    margin-bottom: 3%;
+}
+
+#home-head {
+    margin-top: 80px;
+    margin: auto;
+    text-align: center;
+}
+
+#logo-picture {
+    border-radius: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+section {
+    text-align: center;
+}
+
+#zipcode {
+    width: 200px;
+    margin-top: 80px;
+    margin-left: 200px;
+    padding-left: 0px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+#teaser-tag {
+    margin-top: 30px;
+    text-align: center;
+}

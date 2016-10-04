@@ -1,5 +1,5 @@
 'use strict';
-
+var test2 = 2;
 window.onload = function main() {
     document.getElementById('zipcode').addEventListener('keyup', getZip);
     var zipcode;
@@ -13,8 +13,9 @@ window.onload = function main() {
                 event.target.value = '';
 
                 var test = new GrouponData(Number(zipcode));
-                console.log(this.deals);
             }
+
+
         }
     }
 }
@@ -48,6 +49,8 @@ class GrouponData {
                     }
                 }
                 console.log('deals?');
+                console.log(deals);
+                window.location.replace('file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html');
                 console.log(deals);
             }
         });

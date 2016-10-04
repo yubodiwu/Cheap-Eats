@@ -42,3 +42,14 @@ section {
     margin-top: 30px;
     text-align: center;
 }
+
+#deals-container {
+    height: 800px;
+    width: 1000px;
+    border: 1px solid gray;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3%;
+    background-color: white;
+    margin-bottom: 3%;
+}

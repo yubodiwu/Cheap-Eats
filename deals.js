@@ -12,7 +12,7 @@ window.onload = function() {
 
     var cards = new GroupOnCards(groupOnData);
     console.log('do I get to the line before createCards?');
-    cards.createCards(dealsContainer);
+    cards.createHorizontalCards(dealsContainer);
 
     console.log(groupOnData);
 }
@@ -24,6 +24,7 @@ class GroupOnCards {
     }
 
     createCards(dealsContainer) {
+        console.log(this.data);
         for (let deal of this.data) {
             var row = $('<div class="row">');
             var innerRow = $('<div class="col s12 m12">');
@@ -36,7 +37,7 @@ class GroupOnCards {
 
             cardTitle.text(deal.announcementTitle);
             cardText.text(deal.title);
-            buyLink.text('BUY');
+            buyLink.text('buy blah');
 
             cardContent.append(cardTitle);
             cardContent.append(cardText);
@@ -47,8 +48,43 @@ class GroupOnCards {
             innerRow.append(cardColors);
             cardColors.append(cardContent);
 
-            console.log(`row is instance of jQuery? ${row instanceof jQuery}`);
-            console.log(row[0]);
+            dealsContainer.append(row);
+        }
+    }
+
+    createHorizontalCards(dealsContainer) {
+        console.log(this.data);
+        for (let deal of this.data) {
+            var row = $('<div class="col s12 m12">');
+            var cardHorizontal = $('<div class="card horizontal blue-grey">');
+            var cardImg = $(`<div class="card-image">`)
+            var cardStacked = $('<div class="card-stacked">');
+            var cardContent = $('<span class="card-content">');
+            var cardText = $('<p>');
+            var cardAddress = $('<p style="margin-top: 10px;">');
+            var cardTitle = $('<h5>')
+            var cardAction = $('<div class="card-action">');
+            var cardCopyright = $('<p style="float: right;">')
+            var buyLink = $(`<a href=${deal.buyUrl}>`)
+
+            cardTitle.text(deal.announcementTitle);
+            cardText.text(deal.title);
+            cardAddress.text('need to find address');
+            cardCopyright.text('powered by GroupOn');
+            buyLink.text(`\$${deal.priceAmount/100} (${deal.discountPercent}\% off)`);
+            cardImg.append($(`<img src=${deal.grid4ImageUrl} style="vertical-align: center;">`));
+
+            cardAction.append(buyLink);
+            cardContent.append(cardTitle);
+            cardContent.append(cardText);
+            cardContent.append(cardAddress);
+            cardContent.append(cardAction);
+            cardContent.append(cardCopyright);
+            cardStacked.append(cardContent)
+
+            cardHorizontal.append(cardImg);
+            cardHorizontal.append(cardStacked);
+            row.append(cardHorizontal);
 
             dealsContainer.append(row);
         }

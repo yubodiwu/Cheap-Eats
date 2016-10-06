@@ -1,23 +1,19 @@
 'use strict';
-var test2 = 2;
-var test;
-var zipcode;
 
 window.onload = function main() {
     document.getElementById('address').addEventListener('keyup', getZip);
 
     var defaultBounds = new google.maps.LatLngBounds(
-        // southwest 32.27, -125.88
         new google.maps.LatLng(32.27, -125.88),
         new google.maps.LatLng(42.20, -113.93)
-        // northeast 42.20, -113.93
     );
 
     var autocomplete = new google.maps.places.Autocomplete(
-        (document.getElementById('address')),
-            {types: ['geocode']});
+        (document.getElementById('address')), {
+            types: ['geocode']
+        });
 
-    autocomplete.addListener('place_changed',getZip);
+    autocomplete.addListener('place_changed', getZip);
 
     function getZip(event) {
         if (event.keyCode === 13) {
@@ -30,7 +26,7 @@ window.onload = function main() {
                 }
             }
 
-            var groupOn = new GrouponData (zipcode);
+            var groupOn = new GrouponData(zipcode);
         }
     }
 };
@@ -58,9 +54,11 @@ class GrouponData {
             savings: partnerObj.options[option].discount.amount,
             discountPercent: partnerObj.options[option].discountPercent,
             title: partnerObj.options[option].title,
-            tags: partnerObj.tags
+            tags: partnerObj.tags,
+            display: true
         };
 
+        // only return parsed object if it has a redemption location, and also give it lat, lon, and address values
         if (partnerObj.options[option].redemptionLocations.length > 0) {
             parsedObj.lat = partnerObj.options[option].redemptionLocations[0].lat;
             parsedObj.lng = partnerObj.options[option].redemptionLocations[0].lng;
@@ -69,7 +67,7 @@ class GrouponData {
             parsedObj.state = partnerObj.options[option].redemptionLocations[0].state;
             parsedObj.postalCode = partnerObj.options[option].redemptionLocations[0].postalCode;
 
-            return JSON.stringify(parsedObj);
+            return parsedObj;
         }
     }
 
@@ -98,13 +96,10 @@ class GrouponData {
             method: 'GET',
             dataType: 'jsonp',
             success: (divisions) => {
-                console.log(`this.division doesn't exist, but divisionPointer is ${divisionPointer}`);
-                // console.log(this.division);
-                console.log(coord);
-
+                // create an array of distances for each division for how far the distance is from the input address
                 var distances = [];
                 for (let division of divisions.divisions) {
-                    var coordDiv = {
+                    let coordDiv = {
                         lat: division.lat,
                         lng: division.lng
                     };
@@ -112,6 +107,7 @@ class GrouponData {
                     distances.push(earthDistance(coord, coordDiv));
                 }
 
+                // get the closest division to run ptnAjax on
                 var minDistInd = distances.indexOf(Math.min.apply(null, distances));
                 divisionPointer = divisions.divisions[minDistInd].id;
 
@@ -158,9 +154,12 @@ class GrouponData {
                     }
 
                     // make deals array into obj so it can be stringified
-                    localStorage.setItem('groupOnData', JSON.stringify(dealsArr));
-                    window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
+
                 }
+                console.log(dealsArr);
+                console.log(JSON.stringify(dealsArr));
+                localStorage.setItem('groupOnData', JSON.stringify(dealsArr));
+                window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
             }
         });
     }

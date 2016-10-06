@@ -1,95 +1,148 @@
 'use strict';
 
 window.onload = function() {
-    var groupOnDataString = JSON.parse(localStorage.getItem('groupOnData'));
-    var groupOnData = [];
+    var groupOnData = JSON.parse(localStorage.getItem('groupOnData'));
+    var address = JSON.parse(localStorage.getItem('inputAddress'));
     var dealsContainer = $('#deals-container');
+    var dropdown = $('#dropdown1');
 
-    // converting GroupOn data back into array of objects
-    for (let key in groupOnDataString) {
-        groupOnData.push(JSON.parse(groupOnDataString[key]));
-    }
-
-    var cards = new GroupOnCards(groupOnData);
-    console.log('do I get to the line before createCards?');
+    var cards = new GroupOnCards(groupOnData, address);
+    // filterTabs.append(cards.createFilterTabs());
+    cards.createDropdown(dropdown);
     cards.createHorizontalCards(dealsContainer);
-
-    console.log(groupOnData);
 }
 
 // class of cards for the GroupOn deals for the deals page
 class GroupOnCards {
-    constructor(groupOnData) {
-        this.data = groupOnData
-    }
-
-    createCards(dealsContainer) {
-        console.log(this.data);
+    constructor(groupOnData, address) {
+        this.data = groupOnData;
+        this.coord = {
+            lat: address.geometry.location.lat,
+            lng: address.geometry.location.lng
+        };
+        this.tags = [];
         for (let deal of this.data) {
-            var row = $('<div class="row">');
-            var innerRow = $('<div class="col s12 m12">');
-            var cardColors = $(`<div class="card blue-grey darken-1">`)
-            var cardContent = $('<div class="card-content white-text">');
-            var cardTitle = $('<span class="card-title">');
-            var cardText = $('<p>');
-            var cardAction = $('<div class="card-action">');
-            var buyLink = $(`<a href=${deal.buyUrl}>`)
-
-            cardTitle.text(deal.announcementTitle);
-            cardText.text(deal.title);
-            buyLink.text('buy blah');
-
-            cardContent.append(cardTitle);
-            cardContent.append(cardText);
-            cardAction.append(buyLink);
-            cardContent.append(cardAction);
-            innerRow.append(cardContent);
-            row.append(innerRow);
-            innerRow.append(cardColors);
-            cardColors.append(cardContent);
-
-            dealsContainer.append(row);
+            for (let tag of deal.tags) {
+                if (this.tags.indexOf(tag.name) === -1) {
+                    this.tags.push(tag.name);
+                }
+            }
         }
+        this.tags.sort();
     }
 
     createHorizontalCards(dealsContainer) {
-        console.log(this.data);
+        var dealCards = [];
+
         for (let deal of this.data) {
-            var row = $('<div class="col s12 m12">');
-            var cardHorizontal = $('<div class="card horizontal" style="margin: 0px; border: .1px solid #d3d3d3">');
-            var cardImg = $(`<div class="card-image">`)
-            var cardStacked = $('<div class="card-stacked">');
-            var cardContent = $('<span class="card-content">');
-            var cardText = $('<p>');
-            var cardAddressUpper = $('<p style="margin-top: 10px;">');
-            var cardAddressLower = $('<p>');
-            var cardTitle = $('<h5>')
-            var cardAction = $('<div class="card-action">');
-            var cardCopyright = $('<p style="float: right;">')
-            var buyLink = $(`<a href=${deal.buyUrl}>`)
+            if (deal.display === true) {
+                var coordDeal = {
+                    lat: deal.lat,
+                    lng: deal.lng
+                };
+                var dist = Math.round(this._earthDistance(this.coord, coordDeal) * 100) / 100;
 
-            cardTitle.text(deal.announcementTitle);
-            cardText.text(deal.title);
-            cardAddressUpper.text(`${deal.streetAddress}`);
-            cardAddressLower.text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
-            cardCopyright.text('powered by GroupOn');
-            buyLink.text(`\$${deal.priceAmount/100} (${deal.discountPercent}\% off)`);
-            cardImg.append($(`<img src=${deal.grid4ImageUrl} style="vertical-align: center;">`));
+                var row = $('<div class="col s12 m12">');
+                var cardHorizontal = $('<div class="card horizontal" style="margin: 0px; border: .1px solid #d3d3d3">');
+                var cardImg = $(`<div class="card-image">`).append($(`<img src=${deal.grid4ImageUrl} style="vertical-align: center;">`));
+                var cardStacked = $('<div class="card-stacked">');
+                var cardContent = $('<span class="card-content">');
+                var cardText = $('<p>').text(deal.title);
+                var cardAddressUpper = $('<p style="margin-top: 10px;">').text(`${deal.streetAddress}`);
+                var cardAddressLower = $('<p>').text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
+                var cardDist = $('<a href="" class="dist">').text(`MAP (${dist} MILES AWAY)`);
+                var cardTitle = $('<h5>').text(deal.announcementTitle);
+                var cardAction = $('<div class="card-action">');
+                // var cardCopyright = $('<p style="float: right;">').text('powered by GroupOn');
+                var buyLink = $(`<a href=${deal.buyUrl}>`).text(`BUY \$${deal.priceAmount/100} (${deal.discountPercent}\% OFF)`);
 
-            cardAction.append(buyLink);
-            cardContent.append(cardTitle);
-            cardContent.append(cardText);
-            cardContent.append(cardAddressUpper);
-            cardContent.append(cardAddressLower);
-            cardContent.append(cardAction);
-            // cardContent.append(cardCopyright);
-            cardStacked.append(cardContent)
+                cardAction.append(buyLink);
+                cardAction.append(cardDist);
+                cardContent.append(cardTitle);
+                cardContent.append(cardText);
+                cardContent.append(cardAddressUpper);
+                cardContent.append(cardAddressLower);
+                cardContent.append(cardAction);
+                // cardContent.append(cardCopyright);
+                cardStacked.append(cardContent);
 
-            cardHorizontal.append(cardImg);
-            cardHorizontal.append(cardStacked);
-            row.append(cardHorizontal);
+                cardHorizontal.append(cardImg);
+                cardHorizontal.append(cardStacked);
+                row.append(cardHorizontal);
 
-            dealsContainer.append(row);
+                // create array of objects with the card, distance from the original address, and the price, then poplate an array with them
+                var dealCard = {
+                    card: row,
+                    dist: dist,
+                    price: deal.priceAmount
+                };
+                dealCards.push(dealCard);
+                // dealsContainer.append(row);
+
+            }
         }
+
+        // sort the array of cards by distance
+        dealCards.sort(_compareDist);
+
+        // attach the cards to the page with the closest entries by distance coming first
+        for (let card of dealCards) {
+            dealsContainer.append(card.card);
+        }
+
+        function _compareDist(deal1, deal2) {
+            return deal1.dist - deal2.dist;
+        }
+    }
+
+    // create dropdown menu of restaurant types/offerings that can be clicked to filter for that kind of restaurant/offering
+    createDropdown(dropdown) {
+        for (let tag of this.tags) {
+            let li = $('<li>');
+            let anchor = $('<a href="#!">').text(tag);
+
+            // sets display value for filtered elements to false and re-renders page
+            anchor.on('click', (event) => {
+                var choice = event.target.textContent;
+                console.log(this.data.length);
+                console.log(choice);
+                for (let deal of this.data) {
+                    var tagsArr = [];
+
+                    for (let tag of deal.tags) {
+                        tagsArr.push(tag.name);
+                    }
+
+                    if (tagsArr.indexOf(choice) === -1) {
+                        deal.display = false;
+                    } else {
+                        deal.display = true;
+                    }
+                }
+
+                localStorage.setItem('groupOnData', JSON.stringify(this.data));
+                window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
+            });
+
+            li.append(anchor);
+            dropdown.append(li);
+        }
+    }
+
+    // find distance between two coordinates
+    _earthDistance(coord1, coord2) {
+        var RADIUS_OF_EARTH = 3961; // miles
+        var lat1 = coord1.lat * Math.PI / 180;
+        var lat2 = coord2.lat * Math.PI / 180;
+        var lon1 = coord1.lng * Math.PI / 180;
+        var lon2 = coord2.lng * Math.PI / 180;
+
+        var dlon = lon2 - lon1;
+        var dlat = lat2 - lat1;
+
+        var a = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(lat1) *
+            Math.cos(lat2) * Math.pow(Math.sin(dlon / 2), 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return RADIUS_OF_EARTH * c;
     }
 }

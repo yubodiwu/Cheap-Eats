@@ -42,7 +42,7 @@ class GrouponData {
         this.zipToGeo(zipcode);
     }
 
-    // parse GroupOn partner data
+    // parse data from GroupOn partner api
     parsePartnerData(partnerObj, option) {
         var parsedObj = {
             // cannot declare lat, lng here b/c some deals have no redemption location
@@ -107,12 +107,12 @@ class GrouponData {
                     distances.push(earthDistance(coord, coordDiv));
                 }
 
-                // get the closest division to run ptnAjax on
                 var minDistInd = distances.indexOf(Math.min.apply(null, distances));
                 divisionPointer = divisions.divisions[minDistInd].id;
 
                 ptnAjax(divisionPointer, parser);
 
+                // finds distance between two {lat, lng} pairings
                 function earthDistance(coord1, coord2) {
                     var RADIUS_OF_EARTH = 3961; // miles
                     var lat1 = coord1.lat * Math.PI / 180;
@@ -153,11 +153,9 @@ class GrouponData {
                         }
                     }
 
-                    // make deals array into obj so it can be stringified
-
                 }
-                console.log(dealsArr);
-                console.log(JSON.stringify(dealsArr));
+
+                // put GroupOn data in local storage to use with next page, then go to deals page
                 localStorage.setItem('groupOnData', JSON.stringify(dealsArr));
                 window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
             }

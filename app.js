@@ -46,6 +46,7 @@ class GrouponData {
     parsePartnerData(partnerObj, option) {
         var parsedObj = {
             // cannot declare lat, lng here b/c some deals have no redemption location
+            uuid: partnerObj.uuid,
             announcementTitle: partnerObj.announcementTitle,
             buyUrl: partnerObj.options[option].buyUrl,
             grid4ImageUrl: partnerObj.grid4ImageUrl,
@@ -141,8 +142,6 @@ class GrouponData {
             method: `GET`,
             dataType: `jsonp`,
             success: function(deals) {
-                console.log('deals are?');
-                console.log(deals);
                 for (let deal of deals.deals) {
                     // create a deal for each option
                     for (var i = 0; i < deal.options.length; i++) {

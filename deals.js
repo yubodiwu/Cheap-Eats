@@ -5,11 +5,12 @@ window.onload = function() {
     var address = JSON.parse(localStorage.getItem('inputAddress'));
     var dealsContainer = $('#deals-container');
     var dropdown = $('#dropdown1');
+    var modalSection = $('#modals-section');
 
     var cards = new GroupOnCards(groupOnData, address);
     // filterTabs.append(cards.createFilterTabs());
     cards.createDropdown(dropdown);
-    cards.createHorizontalCards(dealsContainer);
+    cards.createHorizontalCards(dealsContainer, modalSection);
 }
 
 // class of cards for the GroupOn deals for the deals page
@@ -31,7 +32,7 @@ class GroupOnCards {
         this.tags.sort();
     }
 
-    createHorizontalCards(dealsContainer) {
+    createHorizontalCards(dealsContainer,modalSection) {
         var dealCards = [];
 
         for (let deal of this.data) {
@@ -50,12 +51,13 @@ class GroupOnCards {
                 var cardText = $('<p style="margin: 10px">').text(deal.title);
                 var cardAddressUpper = $('<p style="margin: 10px;">').text(`${deal.streetAddress}`);
                 var cardAddressLower = $('<p style="margin: 10px">').text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
-                var cardDist = $('<a href="" class="dist">').text(`MAP (${dist} MILES AWAY)`);
+                var cardDist = $(`<a href="${deal.uuid}" class="modal-trigger">`).text(`MAP (${dist} MILES AWAY)`);
                 var cardTitle = $('<h5 style="margin: 10px">').text(deal.announcementTitle);
                 var cardAction = $('<div class="card-action">');
                 // var cardCopyright = $('<p style="float: right;">').text('powered by GroupOn');
                 var buyLink = $(`<a href=${deal.buyUrl}>`).text(`BUY \$${deal.priceAmount/100} (${deal.discountPercent}\% OFF)`);
 
+                this._addModalMap(cardDist,modalSection);
                 cardAction.append(buyLink);
                 cardAction.append(cardDist);
                 cardContent.append(cardTitle);
@@ -77,11 +79,13 @@ class GroupOnCards {
                     price: deal.priceAmount
                 };
                 dealCards.push(dealCard);
-                // dealsContainer.append(row);
-
             }
         }
 
+        this._appendOrderedCards(dealsContainer,dealCards);
+    }
+
+    _appendOrderedCards(dealsContainer,dealCards) {
         // sort the array of cards by distance
         dealCards.sort(_compareDist);
 
@@ -93,6 +97,12 @@ class GroupOnCards {
         function _compareDist(deal1, deal2) {
             return deal1.dist - deal2.dist;
         }
+    }
+
+    // add modal map to card's distance anchor
+    _addModalMap(cardDist, modalSection) {
+        var uuid = cardDist.attr('href');
+        console.log(typeof uuid);
     }
 
     // create dropdown menu of restaurant types/offerings that can be clicked to filter for that kind of restaurant/offering

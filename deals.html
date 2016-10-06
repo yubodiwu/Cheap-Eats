@@ -21,17 +21,13 @@
     <!-- Load JS App Files -->
     <script src="app.js"></script>
     <script src="deals.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYf3HmnQ-4Z2G0D7m3rlIJJktrtDBsLU8&libraries=places"></script>
 </head>
 
 <body>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYf3HmnQ-4Z2G0D7m3rlIJJktrtDBsLU8&libraries=places"></script>
     <!-- Dropdown Structure -->
-    <ul id="dropdown1" class="dropdown-content">
-        <!-- <li><a href="#!">one</a></li>
-        <li><a href="#!">two</a></li>
-        <li class="divider"></li>
-        <li><a href="#!">three</a></li> -->
-    </ul>
+    <ul id="dropdown1" class="dropdown-content"></ul>
+
     <nav>
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo">Logo</a>
@@ -43,12 +39,12 @@
             </ul>
         </div>
     </nav>
-    <div class="row" id="filter-tabs"></div>
-    <div class="row">
-        <div id="deals-container" class="col s10">
 
-        </div>
+    <div class="row">
+        <div id="deals-container" class="col s10"></div>
     </div>
+
+    <section id="modals-section"></section>
 </body>
 
 </html>

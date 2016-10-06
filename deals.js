@@ -42,16 +42,16 @@ class GroupOnCards {
                 };
                 var dist = Math.round(this._earthDistance(this.coord, coordDeal) * 100) / 100;
 
-                var row = $('<div class="col s12 m12">');
-                var cardHorizontal = $('<div class="card horizontal" style="margin: 0px; border: .1px solid #d3d3d3">');
+                var row = $('<div class="col s6" style="margin-top: 10px; margin-bottom: 10px">');
+                var cardHorizontal = $('<div class="card">');
                 var cardImg = $(`<div class="card-image">`).append($(`<img src=${deal.grid4ImageUrl} style="vertical-align: center;">`));
                 var cardStacked = $('<div class="card-stacked">');
                 var cardContent = $('<span class="card-content">');
-                var cardText = $('<p>').text(deal.title);
-                var cardAddressUpper = $('<p style="margin-top: 10px;">').text(`${deal.streetAddress}`);
-                var cardAddressLower = $('<p>').text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
+                var cardText = $('<p style="margin: 10px">').text(deal.title);
+                var cardAddressUpper = $('<p style="margin: 10px;">').text(`${deal.streetAddress}`);
+                var cardAddressLower = $('<p style="margin: 10px">').text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
                 var cardDist = $('<a href="" class="dist">').text(`MAP (${dist} MILES AWAY)`);
-                var cardTitle = $('<h5>').text(deal.announcementTitle);
+                var cardTitle = $('<h5 style="margin: 10px">').text(deal.announcementTitle);
                 var cardAction = $('<div class="card-action">');
                 // var cardCopyright = $('<p style="float: right;">').text('powered by GroupOn');
                 var buyLink = $(`<a href=${deal.buyUrl}>`).text(`BUY \$${deal.priceAmount/100} (${deal.discountPercent}\% OFF)`);

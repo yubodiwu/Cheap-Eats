@@ -29,7 +29,7 @@ section {
     text-align: center;
 }
 
-#zipcode {
+#address {
     width: 200px;
     margin-top: 80px;
     margin-left: 200px;
@@ -43,7 +43,7 @@ section {
     text-align: center;
 }
 
-#deals-container {
+/*#deals-container {
     height: 800px;
     width: 1000px;
     border: 1px solid gray;
@@ -53,4 +53,4 @@ section {
     background-color: white;
     margin-bottom: 3%;
     padding: 20px;
-}
+}*/

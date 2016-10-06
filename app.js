@@ -4,21 +4,33 @@ var test;
 var zipcode;
 
 window.onload = function main() {
-    document.getElementById('zipcode').addEventListener('keyup', getZip);
+    document.getElementById('address').addEventListener('keyup', getZip);
+
+    var defaultBounds = new google.maps.LatLngBounds(
+        // southwest 32.27, -125.88
+        new google.maps.LatLng(32.27, -125.88),
+        new google.maps.LatLng(42.20, -113.93)
+        // northeast 42.20, -113.93
+    );
+
+    var autocomplete = new google.maps.places.Autocomplete(
+        (document.getElementById('address')),
+            {types: ['geocode']});
+
+    autocomplete.addListener('place_changed',getZip);
 
     function getZip(event) {
-        event.preventDefault();
         if (event.keyCode === 13) {
-            zipcode = event.target.value;
+            var address = autocomplete.getPlace();
+            localStorage.setItem('inputAddress', JSON.stringify(address));
 
-            if (Number(zipcode) > 10000 && Number(zipcode) < 100000) {
-                event.target.value = '';
-
-                test = new GrouponData(Number(zipcode));
-                // localStorage.setItem('groupondata', test.toString());
-
-                test2 = new PlacesData(Number(zipcode));
+            for (let component of address.address_components) {
+                if (component.types[0] === 'postal_code') {
+                    var zipcode = component.long_name;
+                }
             }
+
+            var groupOn = new GrouponData (zipcode);
         }
     }
 };
@@ -34,73 +46,8 @@ class GrouponData {
         this.zipToGeo(zipcode);
     }
 
-    // make Ajax call to Groupon API
-    doAjax(zipcode) {
-        var dealData = this.dealData;
-        var deals = this.deals;
-        var parseGrouponData = this.parseGrouponData;
-
-        $.ajax({
-            url: `http://api.groupon.com/v2/deals/?client_id=e4452424d8c2dcd047b191712adc6ba0167342f2&postal_code=${zipcode}`,
-            method: 'GET',
-            dataType: 'jsonp',
-            success: function(data) {
-                dealData = data.deals;
-                for (let deal of dealData) {
-                    for (let i = 0; i < deal.options.length; i++) {
-                        var filtrdGroupon = parseGrouponData(deal, i);
-
-                        if (filtrdGroupon !== undefined) {
-                            console.log('this happens?');
-                            deals.push(filtrdGroupon);
-                        }
-                    }
-                }
-
-                var dealsJSON = {};
-
-                for (let i = 0; i < deals.length; i++) {
-                    dealsJSON[i] = deals[i];
-                }
-
-                console.log('dealsJSON is ');
-                console.log(dealsJSON);
-
-                localStorage.setItem('groupOnData', JSON.stringify(dealsJSON));
-                // window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
-            }
-        });
-    }
-
-    // get url, image, price, value, discount, latitude, and longitude from a GroupOn data point
-    parseGrouponData(grouponObj, option) {
-        var parsedObj = {
-            // cannot declare lat, lng here b/c some deals have no redemption location
-            announcementTitle: grouponObj.announcementTitle,
-            buyUrl: grouponObj.options[option].buyUrl,
-            grid4ImageUrl: grouponObj.grid4ImageUrl,
-            priceAmount: grouponObj.options[option].price.amount,
-            valueAmount: grouponObj.options[option].value.amount,
-            savings: grouponObj.options[option].discount.amount,
-            discountPercent: grouponObj.options[option].discountPercent,
-            title: grouponObj.options[option].title,
-            tags: grouponObj.tags
-        };
-
-        for (let tag of parsedObj.tags) {
-            if (tag.name === 'Restaurants') console.log('is a restaurant');
-            if (tag.name === 'Restaurants') {
-                // TODO: figure out how to get multiple [lat,lng] pairs if there's more than one
-                parsedObj.lat = grouponObj.options[option].redemptionLocations[0].lat;
-                parsedObj.lng = grouponObj.options[option].redemptionLocations[0].lng;
-                return JSON.stringify(parsedObj);
-            }
-        }
-    }
-
     // parse GroupOn partner data
     parsePartnerData(partnerObj, option) {
-        console.log(partnerObj.options);
         var parsedObj = {
             // cannot declare lat, lng here b/c some deals have no redemption location
             announcementTitle: partnerObj.announcementTitle,
@@ -117,6 +64,10 @@ class GrouponData {
         if (partnerObj.options[option].redemptionLocations.length > 0) {
             parsedObj.lat = partnerObj.options[option].redemptionLocations[0].lat;
             parsedObj.lng = partnerObj.options[option].redemptionLocations[0].lng;
+            parsedObj.streetAddress = partnerObj.options[option].redemptionLocations[0].streetAddress1;
+            parsedObj.city = partnerObj.options[option].redemptionLocations[0].city;
+            parsedObj.state = partnerObj.options[option].redemptionLocations[0].state;
+            parsedObj.postalCode = partnerObj.options[option].redemptionLocations[0].postalCode;
 
             return JSON.stringify(parsedObj);
         }
@@ -124,25 +75,18 @@ class GrouponData {
 
     // take zipcode and convert to {lat, lng} pairing using Google maps geocode api
     zipToGeo(zipcode) {
-        var divAjax = this.divisionAjax;
-        var divisionPointer = this.division;
-        var ptnAjax = this.partnerAjax;
-        var parser = this.parsePartnerData;
-
         $.ajax({
             url: `https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}`,
             method: 'GET',
             dataType: 'json',
-            success: function(data) {
-                this.lat = (data.results[0].geometry.bounds.northeast.lat + data.results[0].geometry.bounds.southwest.lat) / 2;
-                this.lng = (data.results[0].geometry.bounds.northeast.lng + data.results[0].geometry.bounds.southwest.lng) / 2;
+            success: (data) => {
                 var coord = {
-                    lat: this.lat,
-                    lng: this.lng
-                }
+                    lat: (data.results[0].geometry.bounds.northeast.lat + data.results[0].geometry.bounds.southwest.lat) / 2,
+                    lng: (data.results[0].geometry.bounds.northeast.lng + data.results[0].geometry.bounds.southwest.lng) / 2
+                };
                 console.log(`what's undefined?`);
                 console.log(this.divisionAjax);
-                divAjax(divisionPointer, coord, ptnAjax, parser);
+                this.divisionAjax(this.division, coord, this.partnerAjax, this.parsePartnerData);
             }
         });
     }
@@ -153,10 +97,9 @@ class GrouponData {
             url: `https://partner-api.groupon.com/division.json`,
             method: 'GET',
             dataType: 'jsonp',
-            success: function(divisions) {
-                console.log('inside divisionAjax success');
-                console.log(divisions.divisions);
-                console.log(divisionPointer);
+            success: (divisions) => {
+                console.log(`this.division doesn't exist, but divisionPointer is ${divisionPointer}`);
+                // console.log(this.division);
                 console.log(coord);
 
                 var distances = [];
@@ -164,7 +107,7 @@ class GrouponData {
                     var coordDiv = {
                         lat: division.lat,
                         lng: division.lng
-                    }
+                    };
 
                     distances.push(earthDistance(coord, coordDiv));
                 }

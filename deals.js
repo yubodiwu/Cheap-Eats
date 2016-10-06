@@ -56,12 +56,13 @@ class GroupOnCards {
         console.log(this.data);
         for (let deal of this.data) {
             var row = $('<div class="col s12 m12">');
-            var cardHorizontal = $('<div class="card horizontal blue-grey">');
+            var cardHorizontal = $('<div class="card horizontal" style="margin: 0px; border: .1px solid #d3d3d3">');
             var cardImg = $(`<div class="card-image">`)
             var cardStacked = $('<div class="card-stacked">');
             var cardContent = $('<span class="card-content">');
             var cardText = $('<p>');
-            var cardAddress = $('<p style="margin-top: 10px;">');
+            var cardAddressUpper = $('<p style="margin-top: 10px;">');
+            var cardAddressLower = $('<p>');
             var cardTitle = $('<h5>')
             var cardAction = $('<div class="card-action">');
             var cardCopyright = $('<p style="float: right;">')
@@ -69,7 +70,8 @@ class GroupOnCards {
 
             cardTitle.text(deal.announcementTitle);
             cardText.text(deal.title);
-            cardAddress.text('need to find address');
+            cardAddressUpper.text(`${deal.streetAddress}`);
+            cardAddressLower.text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
             cardCopyright.text('powered by GroupOn');
             buyLink.text(`\$${deal.priceAmount/100} (${deal.discountPercent}\% off)`);
             cardImg.append($(`<img src=${deal.grid4ImageUrl} style="vertical-align: center;">`));
@@ -77,9 +79,10 @@ class GroupOnCards {
             cardAction.append(buyLink);
             cardContent.append(cardTitle);
             cardContent.append(cardText);
-            cardContent.append(cardAddress);
+            cardContent.append(cardAddressUpper);
+            cardContent.append(cardAddressLower);
             cardContent.append(cardAction);
-            cardContent.append(cardCopyright);
+            // cardContent.append(cardCopyright);
             cardStacked.append(cardContent)
 
             cardHorizontal.append(cardImg);

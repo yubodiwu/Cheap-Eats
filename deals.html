@@ -19,12 +19,18 @@
     </script>
 
     <!-- Load JS App Files -->
-    <script src="app.js"></script>
+    <!-- <script src="app.js"></script> -->
     <script src="deals.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYf3HmnQ-4Z2G0D7m3rlIJJktrtDBsLU8&libraries=places"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYf3HmnQ-4Z2G0D7m3rlIJJktrtDBsLU8&"></script>
 </head>
 
 <body>
+    <script>
+        $(document).ready(function() {
+            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+            $('.modal-trigger').leanModal();
+        });
+    </script>
     <!-- Dropdown Structure -->
     <ul id="dropdown1" class="dropdown-content"></ul>
 

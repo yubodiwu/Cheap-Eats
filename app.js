@@ -161,28 +161,3 @@ class GrouponData {
         });
     }
 }
-
-class PlacesData {
-    constructor(zipcode) {
-        this.zipcode = zipcode;
-        this.dealData = undefined;
-        this.deals = [];
-        this.lat = undefined;
-        this.lng = undefined;
-        this.zipToGeo(zipcode);
-    }
-
-    zipToGeo(zipcode) {
-        var ajaxPlcs = this.ajaxPlaces;
-
-        $.ajax({
-            url: `https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}`,
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                this.lat = (data.results[0].geometry.bounds.northeast.lat + data.results[0].geometry.bounds.southwest.lat) / 2;
-                this.lng = (data.results[0].geometry.bounds.northeast.lng + data.results[0].geometry.bounds.southwest.lng) / 2;
-            }
-        });
-    }
-}

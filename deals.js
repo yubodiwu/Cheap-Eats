@@ -84,6 +84,7 @@ class GroupOnCards {
                 // var cardCopyright = $('<p style="float: right;">').text('powered by GroupOn');
 
                 this._addModalMap(coordDeal, cardDist, modalSection, this.coord);
+
                 cardAction.append(buyLink);
                 cardAction.append(cardDist);
                 cardContent.append(cardTitle);

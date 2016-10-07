@@ -46,6 +46,7 @@ class GrouponData {
     parsePartnerData(partnerObj, option) {
         var parsedObj = {
             // cannot declare lat, lng here b/c some deals have no redemption location
+            uuid: partnerObj.uuid,
             announcementTitle: partnerObj.announcementTitle,
             buyUrl: partnerObj.options[option].buyUrl,
             grid4ImageUrl: partnerObj.grid4ImageUrl,
@@ -141,8 +142,6 @@ class GrouponData {
             method: `GET`,
             dataType: `jsonp`,
             success: function(deals) {
-                console.log('deals are?');
-                console.log(deals);
                 for (let deal of deals.deals) {
                     // create a deal for each option
                     for (var i = 0; i < deal.options.length; i++) {
@@ -158,31 +157,6 @@ class GrouponData {
                 // put GroupOn data in local storage to use with next page, then go to deals page
                 localStorage.setItem('groupOnData', JSON.stringify(dealsArr));
                 window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
-            }
-        });
-    }
-}
-
-class PlacesData {
-    constructor(zipcode) {
-        this.zipcode = zipcode;
-        this.dealData = undefined;
-        this.deals = [];
-        this.lat = undefined;
-        this.lng = undefined;
-        this.zipToGeo(zipcode);
-    }
-
-    zipToGeo(zipcode) {
-        var ajaxPlcs = this.ajaxPlaces;
-
-        $.ajax({
-            url: `https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}`,
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                this.lat = (data.results[0].geometry.bounds.northeast.lat + data.results[0].geometry.bounds.southwest.lat) / 2;
-                this.lng = (data.results[0].geometry.bounds.northeast.lng + data.results[0].geometry.bounds.southwest.lng) / 2;
             }
         });
     }

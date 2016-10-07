@@ -19,36 +19,33 @@
     </script>
 
     <!-- Load JS App Files -->
-    <script src="app.js"></script>
+    <!-- <script src="app.js"></script> -->
     <script src="deals.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYf3HmnQ-4Z2G0D7m3rlIJJktrtDBsLU8&"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://use.fontawesome.com/423e730c20.js"></script>
 </head>
 
 <body>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYf3HmnQ-4Z2G0D7m3rlIJJktrtDBsLU8&libraries=places"></script>
     <!-- Dropdown Structure -->
-    <ul id="dropdown1" class="dropdown-content">
-        <!-- <li><a href="#!">one</a></li>
-        <li><a href="#!">two</a></li>
-        <li class="divider"></li>
-        <li><a href="#!">three</a></li> -->
-    </ul>
+    <ul id="dropdown1" class="dropdown-content"></ul>
+
     <nav>
-        <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">Logo</a>
+        <div class="nav-wrapper blue darken-3">
+            <a href="#!" class="brand-logo"><i id="cutlery" class="fa fa-cutlery font-awesome home-title" style="margin-left: 100px; font-size: 30px"><span class="home-title" style="margin-left: 15px">CheapEats</span></i></a>
             <ul class="right hide-on-med-and-down">
-                <li><a href="sass.html">Sass</a></li>
-                <li><a href="badges.html">Components</a></li>
+                <li><a href="index.html">Home</a></li>
                 <!-- Dropdown Trigger -->
-                <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Choose a Cuisine/Offering</a></li>
+                <li><a class="dropdown-button" href="#!" data-activates="dropdown1"><span style="margin-right: 50px">Choose a Cuisine/Offering</span></a></li>
             </ul>
         </div>
     </nav>
-    <div class="row" id="filter-tabs"></div>
-    <div class="row">
-        <div id="deals-container" class="col s10">
 
-        </div>
+    <div class="row">
+        <div id="deals-container" class="col s10"></div>
     </div>
+
+    <section id="modals-section"></section>
 </body>
 
 </html>

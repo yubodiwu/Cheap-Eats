@@ -5,16 +5,41 @@ window.onload = function() {
     var address = JSON.parse(localStorage.getItem('inputAddress'));
     var dealsContainer = $('#deals-container');
     var dropdown = $('#dropdown1');
+    var modalSection = $('#modals-section');
 
     var cards = new GroupOnCards(groupOnData, address);
     // filterTabs.append(cards.createFilterTabs());
     cards.createDropdown(dropdown);
-    cards.createHorizontalCards(dealsContainer);
-}
+    cards.createHorizontalCards(dealsContainer, modalSection);
+
+    $(`.modal-trigger`).leanModal();
+
+    $(document).on('click', '.modal-trigger', function() {
+        var uuid = this.getAttribute('href').slice(1);
+        var modalMap = document.getElementById(`map\&${uuid}`);
+        var curCoord;
+        $(modalMap).css('height', '500px');
+        $(modalMap).css('width', '100%');
+        // var test = document.createElement('p');
+        console.log(modalMap);
+
+        for (let card of cards.data) {
+            if (card.uuid === uuid) {
+                curCoord = {
+                    lat: card.lat,
+                    lng: card.lng
+                };
+            }
+        }
+
+        initMap(curCoord, address, modalMap);
+    });
+};
 
 // class of cards for the GroupOn deals for the deals page
 class GroupOnCards {
     constructor(groupOnData, address) {
+        this.address = address;
         this.data = groupOnData;
         this.coord = {
             lat: address.geometry.location.lat,
@@ -31,7 +56,7 @@ class GroupOnCards {
         this.tags.sort();
     }
 
-    createHorizontalCards(dealsContainer) {
+    createHorizontalCards(dealsContainer, modalSection) {
         var dealCards = [];
 
         for (let deal of this.data) {
@@ -42,19 +67,23 @@ class GroupOnCards {
                 };
                 var dist = Math.round(this._earthDistance(this.coord, coordDeal) * 100) / 100;
 
-                var row = $('<div class="col s12 m12">');
-                var cardHorizontal = $('<div class="card horizontal" style="margin: 0px; border: .1px solid #d3d3d3">');
+                var row = $('<div class="col s6" style="margin-top: 10px; margin-bottom: 10px">');
+                var cardHorizontal = $('<div class="card">');
                 var cardImg = $(`<div class="card-image">`).append($(`<img src=${deal.grid4ImageUrl} style="vertical-align: center;">`));
                 var cardStacked = $('<div class="card-stacked">');
                 var cardContent = $('<span class="card-content">');
-                var cardText = $('<p>').text(deal.title);
-                var cardAddressUpper = $('<p style="margin-top: 10px;">').text(`${deal.streetAddress}`);
-                var cardAddressLower = $('<p>').text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
-                var cardDist = $('<a href="" class="dist">').text(`MAP (${dist} MILES AWAY)`);
-                var cardTitle = $('<h5>').text(deal.announcementTitle);
+                var cardText = $('<p style="margin: 10px">').text(deal.title);
+                var cardAddressUpper = $('<p style="margin: 10px; margin-bottom: 0px">').text(`${deal.streetAddress}`);
+                var cardAddressLower = $('<p style="margin: 10px; margin-top: 0px">').text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
+                var cardTitle = $('<h5 style="margin: 10px">').text(deal.announcementTitle);
                 var cardAction = $('<div class="card-action">');
-                // var cardCopyright = $('<p style="float: right;">').text('powered by GroupOn');
                 var buyLink = $(`<a href=${deal.buyUrl}>`).text(`BUY \$${deal.priceAmount/100} (${deal.discountPercent}\% OFF)`);
+
+                var cardDist = $(`<a class="modal-trigger" href="#${deal.uuid}">`).text(`MAP (${dist} MILES AWAY)`);
+
+                // var cardCopyright = $('<p style="float: right;">').text('powered by GroupOn');
+
+                this._addModalMap(coordDeal, cardDist, modalSection, this.coord);
 
                 cardAction.append(buyLink);
                 cardAction.append(cardDist);
@@ -77,11 +106,13 @@ class GroupOnCards {
                     price: deal.priceAmount
                 };
                 dealCards.push(dealCard);
-                // dealsContainer.append(row);
-
             }
         }
 
+        this._appendOrderedCards(dealsContainer, dealCards);
+    }
+
+    _appendOrderedCards(dealsContainer, dealCards) {
         // sort the array of cards by distance
         dealCards.sort(_compareDist);
 
@@ -93,6 +124,25 @@ class GroupOnCards {
         function _compareDist(deal1, deal2) {
             return deal1.dist - deal2.dist;
         }
+    }
+
+    // add modal map to card's distance anchor
+    _addModalMap(coordDeal, cardDist, modalSection, address) {
+        // var directionsRequest = {
+        //     origin: new google.maps.LatLng(coordDeal.lat, coordDeal.lng),
+        //     destination: new google.maps.LatLng(address.lat, address.lng),
+        //     travelMode: 'DRIVING'
+        // }
+        var uuid = cardDist.attr('href');
+        var modal = $(`<div id="${uuid.slice(1)}" class="modal">`);
+        var modalContent = $(`<div class="modal-content">`);
+        // var modalHeader = // need header
+        var modalMap = $(`<div id="map\&${uuid.slice(1)}">`);
+
+        modalContent.append(modalMap);
+        modal.append(modalContent);
+
+        modalSection.append(modal);
     }
 
     // create dropdown menu of restaurant types/offerings that can be clicked to filter for that kind of restaurant/offering
@@ -145,4 +195,31 @@ class GroupOnCards {
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return RADIUS_OF_EARTH * c;
     }
+}
+
+function initMap(coordDeal, address, modalElement) {
+    var directionsRequest = {
+        origin: new google.maps.LatLng(coordDeal.lat, coordDeal.lng),
+        destination: new google.maps.LatLng(address.geometry.location.lat, address.geometry.location.lng),
+        travelMode: 'DRIVING'
+    };
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    var mapCenter = new google.maps.LatLng((coordDeal.lat + address.geometry.location.lat) / 2, (coordDeal.lng + address.geometry.location.lng) / 2);
+
+    var map = new google.maps.Map(modalElement, {
+        zoom: 12,
+        center: mapCenter
+    });
+
+    directionsDisplay.setMap(map);
+    calcAndDisplayRoute(directionsService, directionsDisplay, directionsRequest);
+}
+
+function calcAndDisplayRoute(directionsService, directionsDisplay, directionsRequest) {
+    directionsService.route(directionsRequest, function(result, status) {
+        if (status === 'OK') {
+            directionsDisplay.setDirections(result);
+        }
+    });
 }

@@ -17,6 +17,7 @@ window.onload = function main() {
 
     function getZip(event) {
         if (event.keyCode === 13) {
+            console.log(`going to deals page...`);
             var address = autocomplete.getPlace();
             localStorage.setItem('inputAddress', JSON.stringify(address));
 
@@ -83,8 +84,7 @@ class GrouponData {
                     lat: (data.results[0].geometry.bounds.northeast.lat + data.results[0].geometry.bounds.southwest.lat) / 2,
                     lng: (data.results[0].geometry.bounds.northeast.lng + data.results[0].geometry.bounds.southwest.lng) / 2
                 };
-                console.log(`what's undefined?`);
-                console.log(this.divisionAjax);
+
                 this.divisionAjax(this.division, coord, this.partnerAjax, this.parsePartnerData);
             }
         });

@@ -9,6 +9,10 @@ body {
     background-size: 100%;
 }
 
+.card {
+    height: 535px;
+}
+
 .home-title {
     font-family: cursive;
 }

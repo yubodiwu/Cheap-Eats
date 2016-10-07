@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cido Posti</title>
+    <title>CheapEats</title>
     <!-- Latest compiled and minified CSS -->
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="materialize/css/materialize.min.css">
 
     <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="deals.css">
 
     <script src="materialize/js/jquery-3.1.1.min.js">
     </script>
@@ -26,7 +27,8 @@
     <script src="https://use.fontawesome.com/423e730c20.js"></script>
 </head>
 
-<body>
+<body id="deals-body">
+
     <!-- Dropdown Structure -->
     <ul id="dropdown1" class="dropdown-content"></ul>
 
@@ -43,7 +45,7 @@
     </nav>
 
     <div class="row">
-        <div id="deals-container" class="col s10"></div>
+        <div id="deals-container" class="container z-depth-10"></div>
     </div>
 
     <section id="modals-section"></section>

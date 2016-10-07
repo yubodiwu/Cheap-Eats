@@ -70,7 +70,7 @@ class GroupOnCards {
                 var dist = Math.round(this._earthDistance(this.coord, coordDeal) * 100) / 100;
 
                 var row = $('<div class="col s6" style="margin-top: 10px; margin-bottom: 10px">');
-                var cardHorizontal = $('<div class="card">');
+                var cardHorizontal = $('<div class="card large">');
                 var cardImg = $(`<div class="card-image">`).append($(`<img src=${deal.grid4ImageUrl} style="vertical-align: center;">`));
                 var cardStacked = $('<div class="card-stacked">');
                 var cardContent = $('<span class="card-content">');

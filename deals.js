@@ -73,8 +73,8 @@ class GroupOnCards {
                 var cardStacked = $('<div class="card-stacked">');
                 var cardContent = $('<span class="card-content">');
                 var cardText = $('<p style="margin: 10px">').text(deal.title);
-                var cardAddressUpper = $('<p style="margin: 10px;">').text(`${deal.streetAddress}`);
-                var cardAddressLower = $('<p style="margin: 10px">').text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
+                var cardAddressUpper = $('<p style="margin: 10px; margin-bottom: 0px">').text(`${deal.streetAddress}`);
+                var cardAddressLower = $('<p style="margin: 10px; margin-top: 0px">').text(`${deal.city}, ${deal.state} ${deal.postalCode}`);
                 var cardTitle = $('<h5 style="margin: 10px">').text(deal.announcementTitle);
                 var cardAction = $('<div class="card-action">');
                 var buyLink = $(`<a href=${deal.buyUrl}>`).text(`BUY \$${deal.priceAmount/100} (${deal.discountPercent}\% OFF)`);

@@ -6,11 +6,13 @@ window.onload = function() {
     var dealsContainer = $('#deals-container');
     var dropdown = $('#dropdown1');
     var modalSection = $('#modals-section');
+    var allDealsButton = $('#all-deals');
 
     var cards = new GroupOnCards(groupOnData, address);
-    // filterTabs.append(cards.createFilterTabs());
+
     cards.createDropdown(dropdown);
     cards.createHorizontalCards(dealsContainer, modalSection);
+    cards.allDeals(allDealsButton);
 
     $(`.modal-trigger`).leanModal();
 
@@ -110,6 +112,17 @@ class GroupOnCards {
         }
 
         this._appendOrderedCards(dealsContainer, dealCards);
+    }
+
+    allDeals(button) {
+        button.on('click', (event) => {
+            for (let deal of this.data) {
+                deal.display = true;
+            }
+
+            localStorage.setItem('groupOnData',JSON.stringify(this.data));
+            window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
+        });
     }
 
     _appendOrderedCards(dealsContainer, dealCards) {

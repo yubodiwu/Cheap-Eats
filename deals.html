@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cido Posti</title>
+    <title>CheapEats</title>
     <!-- Latest compiled and minified CSS -->
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="materialize/css/materialize.min.css">
@@ -26,24 +26,28 @@
     <script src="https://use.fontawesome.com/423e730c20.js"></script>
 </head>
 
-<body>
+<body id="deals-body">
+
     <!-- Dropdown Structure -->
     <ul id="dropdown1" class="dropdown-content"></ul>
 
-    <nav>
-        <div class="nav-wrapper blue darken-3">
-            <a href="index.html" class="brand-logo"><i id="cutlery" class="fa fa-cutlery font-awesome home-title" style="margin-left: 100px; font-size: 30px"><span class="home-title" style="margin-left: 15px">CheapEats</span></i></a>
-            <ul class="right hide-on-med-and-down">
-                <li><a href="index.html">Home</a></li>
-                <li><a id="all-deals" href="#!">All Deals</a></li>
-                <!-- Dropdown Trigger -->
-                <li><a class="dropdown-button" href="#!" data-activates="dropdown1"><span style="margin-right: 50px">Choose a Cuisine/Offering</span></a></li>
-            </ul>
-        </div>
-    </nav>
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper blue darken-3">
+                <a href="index.html" class="brand-logo"><i id="cutlery" class="fa fa-cutlery font-awesome home-title" style="margin-left: 100px; font-size: 30px"><span class="home-title" style="margin-left: 15px">CheapEats</span></i></a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a id="all-deals" href="#!">All Deals</a></li>
+                    <!-- Dropdown Trigger -->
+                    <li><a class="dropdown-button" href="#!" data-activates="dropdown1"><span style="margin-right: 50px">Choose a Cuisine/Offering</span></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
 
     <div class="row">
-        <div id="deals-container" class="col s10"></div>
+        <div id="deals-container" class="container z-depth-10"></div>
     </div>
 
     <section id="modals-section"></section>

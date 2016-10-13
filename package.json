@@ -1,0 +1,14 @@
+{
+  "name": "q1",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": {
+    "url": "git@github.com:yubodiwu/q1Project.git",
+    "type": "git"
+  },
+  "author": "Yubo Allan Diwu <yubo.diwu@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}

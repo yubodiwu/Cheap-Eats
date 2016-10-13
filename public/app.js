@@ -156,7 +156,7 @@ class GrouponData {
 
                 // put GroupOn data in local storage to use with next page, then go to deals page
                 localStorage.setItem('groupOnData', JSON.stringify(dealsArr));
-                window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
+                window.location.href = 'deals.html';
             }
         });
     }

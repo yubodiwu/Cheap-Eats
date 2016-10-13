@@ -1,9 +1,9 @@
 body {
-    background-image: url("img/foodbg.jpg");
+    background-image: url("/public/img/foodbg.jpg");
 }
 
 #deals-body {
-    background-image: url("img/foodbgDeals.png");
+    background-image: url("/public/img/foodbgDeals.png");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100%;

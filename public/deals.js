@@ -121,7 +121,7 @@ class GroupOnCards {
             }
 
             localStorage.setItem('groupOnData',JSON.stringify(this.data));
-            window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
+            window.location.href = 'deals.html';
         });
     }
 
@@ -184,7 +184,7 @@ class GroupOnCards {
                 }
 
                 localStorage.setItem('groupOnData', JSON.stringify(this.data));
-                window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
+                window.location.href = 'deals.html';
             });
 
             li.append(anchor);

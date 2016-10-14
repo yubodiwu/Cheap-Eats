@@ -20,7 +20,7 @@ window.onload = function() {
         var uuid = this.getAttribute('href').slice(1);
         var modalMap = document.getElementById(`map\&${uuid}`);
         var curCoord;
-        $(modalMap).css('height', '500px');
+        $(modalMap).css('height', '400px');
         $(modalMap).css('width', '100%');
         // var test = document.createElement('p');
         console.log(modalMap);
@@ -121,7 +121,7 @@ class GroupOnCards {
             }
 
             localStorage.setItem('groupOnData',JSON.stringify(this.data));
-            window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
+            window.location.href = 'deals.html';
         });
     }
 
@@ -184,7 +184,7 @@ class GroupOnCards {
                 }
 
                 localStorage.setItem('groupOnData', JSON.stringify(this.data));
-                window.location.href = 'file:///Users/yubodiwu/workspace/Galvanize/Projects/q1/deals.html';
+                window.location.href = 'deals.html';
             });
 
             li.append(anchor);

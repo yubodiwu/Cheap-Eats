@@ -5,5 +5,4 @@ This project makes use of the GroupOn Partner API and the Google Places API to f
 
 The most recent edits have been to the "ooprefactor" branch in an attempt to make the code more object oriented and easier to navigate.
 
-Here's a link to the project!
-gentle-spire-90650.herokuapp.com
+[Here's a link to the project!](gentle-spire-90650.herokuapp.com)

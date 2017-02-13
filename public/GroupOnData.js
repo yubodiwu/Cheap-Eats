@@ -23,6 +23,7 @@ class GrouponData {
                     lng: (data.results[0].geometry.bounds.northeast.lng + data.results[0].geometry.bounds.southwest.lng) / 2
                 };
 
+                window.location.href = 'deals.html';
                 this.divisionAjax(this.division, coord);
             }
         });
@@ -50,6 +51,9 @@ class GrouponData {
                 divisionPointer = divisions.divisions[minDistInd].id;
 
                 this.partnerAjax(divisionPointer);
+            },
+            error: (err) => {
+                console.error(err);
             }
         });
     }

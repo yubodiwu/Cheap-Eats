@@ -13,12 +13,12 @@ window.onload = function main() {
         localStorage.setItem('inputAddress', JSON.stringify(address));
 
         for (let component of address.address_components) {
-            console.log(address);
+            console.log("address is ", address);
             if (component.types[0] === 'postal_code') {
                 var zipcode = component.long_name;
             }
         }
-
+        console.log("zipcode is ", zipcode);
         var groupOn = new GrouponData(zipcode);
     });
 };

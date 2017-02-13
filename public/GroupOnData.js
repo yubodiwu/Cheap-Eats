@@ -24,7 +24,7 @@ class GrouponData {
                 };
 
                 // bypass bug in divisionAjax and relocate window anyway
-                // window.location.href = 'deals.html';
+                window.location.href = 'deals.html';
                 this.divisionAjax(this.division, coord);
             }
         });

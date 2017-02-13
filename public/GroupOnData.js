@@ -24,7 +24,7 @@ class GrouponData {
                 };
 
                 // bypass bug in divisionAjax and relocate window anyway
-                window.location.href = 'deals.html';
+                // window.location.href = 'deals.html';
                 this.divisionAjax(this.division, coord);
             }
         });
@@ -81,6 +81,7 @@ class GrouponData {
                 }
 
                 // put GroupOn data in local storage to use with next page, then go to deals page
+                console.log("this happens?");
                 localStorage.setItem('groupOnData', JSON.stringify(dealsArr));
                 window.location.href = 'deals.html';
             }

@@ -13,49 +13,41 @@ class GrouponData {
 
     // take zipcode and convert to {lat, lng} pairing using Google maps geocode api
     zipToGeo(zipcode) {
-        $.ajax({
-            url: `https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}`,
-            method: 'GET',
-            dataType: 'json',
-            success: (data) => {
-                var coord = {
-                    lat: (data.results[0].geometry.bounds.northeast.lat + data.results[0].geometry.bounds.southwest.lat) / 2,
-                    lng: (data.results[0].geometry.bounds.northeast.lng + data.results[0].geometry.bounds.southwest.lng) / 2
-                };
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${zipcode}`).then((data) => {
+            return data.json();
+        }).then((data) => {
+            var coord = {
+                lat: (data.results[0].geometry.bounds.northeast.lat + data.results[0].geometry.bounds.southwest.lat) / 2,
+                lng: (data.results[0].geometry.bounds.northeast.lng + data.results[0].geometry.bounds.southwest.lng) / 2
+            };
 
-                // bypass bug in divisionAjax and relocate window anyway
-                window.location.href = 'deals.html';
-                this.divisionAjax(this.division, coord);
-            }
+            // window.location.href = 'deals.html';
+            this.divisionAjax(this.division, coord);
         });
     }
 
     // given {lat,lng} pairing, find the closest GroupOn division
     divisionAjax(divisionPointer, coord) {
-        $.ajax({
-            url: `https://partner-api.groupon.com/division.json`,
-            method: 'GET',
-            dataType: 'jsonp',
-            success: (divisions) => {
-                // create an array of distances for each division for how far the distance is from the input address
-                var distances = [];
-                for (let division of divisions.divisions) {
-                    let coordDiv = {
-                        lat: division.lat,
-                        lng: division.lng
-                    };
+        fetch(`/api/get-division`).then((data) => {
+            return data.json();
+        }).then((divisions) => {
+            console.log(divisions);
+            var distances = [];
+            for (let division of divisions.divisions) {
+                let coordDiv = {
+                    lat: division.lat,
+                    lng: division.lng
+                };
 
-                    distances.push(this._earthDistance(coord, coordDiv));
-                }
-
-                var minDistInd = distances.indexOf(Math.min.apply(null, distances));
-                divisionPointer = divisions.divisions[minDistInd].id;
-
-                this.partnerAjax(divisionPointer);
-            },
-            error: (err) => {
-                console.error(err);
+                distances.push(this._earthDistance(coord, coordDiv));
             }
+
+            var minDistInd = distances.indexOf(Math.min.apply(null, distances));
+            divisionPointer = divisions.divisions[minDistInd].id;
+
+            this.partnerAjax(divisionPointer);
+        }).catch((err) => {
+            console.error(err);
         });
     }
 
@@ -63,29 +55,27 @@ class GrouponData {
     partnerAjax(divisionId) {
         var dealsArr = [];
 
-        $.ajax({
-            url: `https://partner-api.groupon.com/deals.json?tsToken=US_AFF_0_201236_212556_0&division_id=${divisionId}&offset=0&limit=250&filters=category:food-and-drink`,
-            method: `GET`,
-            dataType: `jsonp`,
-            success: (deals) => {
-                for (let deal of deals.deals) {
-                    // create a deal for each option
-                    for (var i = 0; i < deal.options.length; i++) {
-                        var filtrdPartnerDeal = this.parsePartnerData(deal, i);
+        fetch(`/api/get-partner-data/${divisionId}`).then((data) => {
+            return data.json();
+        }).then((deals) => {
+            console.log(deals);
+            for (let deal of deals.deals) {
+                for (var i = 0; i < deal.options.length; i++) {
+                    var filtrdPartnerDeal = this.parsePartnerData(deal, i);
 
-                        if (filtrdPartnerDeal !== undefined) {
-                            dealsArr.push(filtrdPartnerDeal);
-                        }
+                    if (filtrdPartnerDeal !== undefined) {
+                        dealsArr.push(filtrdPartnerDeal);
                     }
-
                 }
 
-                // put GroupOn data in local storage to use with next page, then go to deals page
-                console.log("this happens?");
-                localStorage.setItem('groupOnData', JSON.stringify(dealsArr));
-                window.location.href = 'deals.html';
             }
-        });
+
+            // put GroupOn data in local storage to use with next page, then go to deals page
+            localStorage.setItem('groupOnData', JSON.stringify(dealsArr));
+            window.location.href = 'deals.html';
+        }).catch((err) => {
+            console.error(err);
+        })
     }
 
     // parse data from GroupOn partner api

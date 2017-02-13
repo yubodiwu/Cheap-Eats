@@ -10,6 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.14.0",
-    "heroku": "^0.2.0"
+    "heroku": "^0.2.0",
+    "npm-request": "^1.0.0",
+    "request": "^2.79.0"
   }
 }
